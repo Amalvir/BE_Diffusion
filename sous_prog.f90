@@ -42,6 +42,30 @@ subroutine C_init(a)
 	end do
 end subroutine C_init
 
+subroutine concentration(a)
+	use mes
+	implicit none
+
+	type(mes), intent(inout) :: a
+	integer :: i,j
+	real :: delta_x,delta_t,R,t,f
+
+	delta_x=a%L/real(a%N)
+	delta_t=a%tf/real(a%Nt)
+	R=a%D*delta_t/(delta_x**2)
+	t=0
+
+	do i=2,a%N-1
+		do i=1,a%Nt
+			t=t+delta_t
+			a%C(i,j+1)=R*a%C(i-1,j)+(1-2*R)*a%C(i,j)+R*a%C(i+1,j)
+			a%C(1,j+1)=f(t)
+			a%C(N,j+1)=0
+		end do
+		t=0
+	end do
+end subroutine
+
 function H(x)
 	implicit none
 	real,intent(in) :: x
@@ -50,5 +74,11 @@ function H(x)
 	if (x>=0) then H=1
 	else H=0
 	end if
-
 end function H
+
+function f(x)
+	real,intent(in) :: x
+	real :: f
+
+	f=0
+end function f
