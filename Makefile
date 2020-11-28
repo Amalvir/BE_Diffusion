@@ -1,5 +1,5 @@
 FC = gfortran
-OPT = -g -O0 -fbounds-check
+OPT = -g -O0 -fbounds-check 
 
 OBJ = m_type.o prog.o sous_prog.o
 
@@ -16,5 +16,5 @@ sous_prog.o :	sous_prog.f90
 	$(FC) $(OPT) sous_prog.f90 -c
 
 clean :
-	/bin/rm -f $(OBJ) *.mod *.exe
+	/bin/rm -f $(OBJ) *.mod *.exe *.txt
 

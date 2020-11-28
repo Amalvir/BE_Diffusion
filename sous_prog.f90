@@ -26,7 +26,7 @@ subroutine maillage(a)
 	integer :: i
 	
 	do i=1,a%N
-		a%X(i)=a%N/a%L*(i-1)
+		a%X(i)=a%L*(i-1)/(a%N-1)
 	end do
 end subroutine maillage
 
@@ -73,7 +73,10 @@ subroutine ecriture(a)
 	type(mes), intent(in) :: a
 	integer :: i,j
 	
-	open(11, file="sortie.dat")
+	open(11, file="sortie.txt")
+	open(12, file="debug.txt")
+	write(12,*) (a%X(i),i=1,a%N)
+	close(12)
 	do j=1,a%Nt
 		write(11,*) (a%C(i,j),i=1,a%N)
 	end do
