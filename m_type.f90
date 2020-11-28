@@ -1,4 +1,4 @@
-module m_type
+module m_type 
 	implicit none
 
 	type mes
@@ -6,5 +6,5 @@ module m_type
 		integer :: N,Nt
 		real,dimension(:),allocatable :: X
 		real,dimension(:,:),allocatable :: C
-	end type
+	end type mes
 end module m_type
