@@ -17,7 +17,7 @@ subroutine recup_donnee(a)
 	
 	close(10)
 end subroutine recup_donnee
-	
+
 subroutine maillage(a)
 	use m_type
 	implicit none
@@ -56,7 +56,7 @@ subroutine concentration(a)
 	t=0
 
 	do i=2,a%N-1
-		do j=1,a%Nt
+		do j=1,a%Nt-1
 			t=t+delta_t
 			a%C(i,j+1)=R*a%C(i-1,j)+(1-2*R)*a%C(i,j)+R*a%C(i+1,j)
 			a%C(1,j+1)=f(t)
