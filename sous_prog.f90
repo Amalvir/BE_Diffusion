@@ -35,10 +35,12 @@ subroutine C_init(a)
 	implicit none
 
 	type(mes),intent(inout) :: a
-	integer :: H,i
+	integer :: H
+	integer :: i
 
 	do i=1,a%N
-		a%C(i,1)=a%C0*(H(a%X(i)-a%xd) - H(a%X(i)-a%xf)) 
+		!a%C(i,1)=a%C0*(H(a%X(i)-a%xd) - H(a%X(i)-a%xf)) 
+		a%C(i,1)=0.
 	end do
 end subroutine C_init
 
@@ -48,23 +50,24 @@ subroutine concentration(a)
 
 	type(mes), intent(inout) :: a
 	integer :: i,j
-	real :: delta_x,delta_t,R,t,f
+	real :: delta_x,delta_t,R,t
+	real :: f
 
 	delta_x=a%L/real(a%N)
 	delta_t=a%tf/real(a%Nt)
 	R=a%D*delta_t/(delta_x**2)
-	t=0
+	t=0.
 
 	do i=2,a%N-1
 		do j=1,a%Nt-1
 			t=t+delta_t
-			a%C(i,j+1)=R*a%C(i-1,j)+(1-2*R)*a%C(i,j)+R*a%C(i+1,j)
-			a%C(1,j+1)=f(t)
-			a%C(a%N,j+1)=0
+			a%C(i,j+1)=R*a%C(i-1,j)+(1.-2.*R)*a%C(i,j)+R*a%C(i+1,j)
+			a%C(1,j+1)=a%C0
+			a%C(a%N,j+1)=0.
 		end do
-		t=0
+		t=0.
 	end do
-end subroutine
+end subroutine concentration
 
 subroutine ecriture(a)
 	use m_type
@@ -97,5 +100,5 @@ function f(x)
 	real,intent(in) :: x
 	real :: f
 
-	f=0
+	f=0.
 end function f
