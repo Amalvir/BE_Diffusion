@@ -11,5 +11,6 @@ program main
 	call C_init(a)
 	call concentration(a)
 	call ecriture(a)
+	call ecriture_csv(a)
 	deallocate(a%X,a%C)
 end program main
