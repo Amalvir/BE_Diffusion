@@ -53,16 +53,15 @@ subroutine concentration(a)
 	delta_x=a%L/real(a%N)
 	delta_t=a%tf/real(a%Nt)
 	R=a%D*delta_t/(delta_x**2)
-	t=0
+	t=0.
 
-	do i=2,a%N-1
-		do j=1,a%Nt-1
-			t=t+delta_t
-			a%C(i,j+1)=R*a%C(i-1,j)+(1-2*R)*a%C(i,j)+R*a%C(i+1,j)
-			a%C(1,j+1)=f(t)
-			a%C(a%N,j+1)=0
+	do j=1,a%Nt-1
+		a%C(1,j+1)=f(t)
+		a%C(a%N,j+1)=0.
+		t=t+delta_t
+		do i=2,a%N-1
+			a%C(i,j+1)=R*a%C(i-1,j)+(1.-2.*R)*a%C(i,j)+R*a%C(i+1,j)
 		end do
-		t=0
 	end do
 end subroutine
 
@@ -73,9 +72,11 @@ subroutine ecriture(a)
 	type(mes), intent(in) :: a
 	integer :: i,j
 	
-	open(11, file="sortie.txt")
-	do j=1,a%Nt
-		write(11,*) (a%C(i,j),i=1,a%N)
+	open(11, file="res.csv")
+	do i=1,a%Nt
+		do j=1,a%N
+			write(11,*) a%X(j), a%C(j,i)
+		end do
 	end do
 	close(11)
 	
@@ -97,5 +98,5 @@ function f(x)
 	real,intent(in) :: x
 	real :: f
 
-	f=0
+	f=0.
 end function f
