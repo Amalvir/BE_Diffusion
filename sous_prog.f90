@@ -30,24 +30,35 @@ subroutine maillage(a)
 	end do
 end subroutine maillage
 
-subroutine C_init(a)
+subroutine C_init(a,choix)
 	use m_type
 	implicit none
 
 	type(mes),intent(inout) :: a
+	character(len=9),intent(in) :: choix
 	integer :: H
 	integer :: i
 
 	do i=1,a%N
-		a%C(i,1)=a%C0*(H(a%X(i)-a%xd) - H(a%X(i)-a%xf)) 
+		select case (choix)
+			case ("classique")
+			a%C(i,1)=a%C0*(H(a%X(i)-a%xd) - H(a%X(i)-a%xf)) 
+			case("debug2")
+			a%C(i,1)=0.
+
+			case default
+			print*, "Merci de tapper classique ou debug2"
+			stop
+		end select
 	end do
 end subroutine C_init
 
-subroutine concentration(a)
+subroutine concentration(a,choix)
 	use m_type
 	implicit none
 
 	type(mes), intent(inout) :: a
+	character(len=9),intent(in) :: choix
 	integer :: i,j
 	real :: delta_x,delta_t,R,t
 	real :: f
@@ -58,7 +69,12 @@ subroutine concentration(a)
 	t=0.
 
 	do j=1,a%Nt-1
-		a%C(1,j+1)=f(t)
+		select case (choix)
+			case ("classique")
+			a%C(1,j+1)=f(t)
+			case("debug2")
+			a%C(1,j+1)=a%C0
+		end select
 		a%C(a%N,j+1)=0.
 		t=t+delta_t
 		do i=2,a%N-1
@@ -82,22 +98,44 @@ subroutine ecriture(a)
 	
 end subroutine ecriture
 
-subroutine ecriture_csv(a)
+subroutine ecriture_csv(a,choix)
 	use m_type
 	implicit none
 	
 	type(mes), intent(in) :: a
+	character(len=9),intent(in) :: choix
 	integer :: i,j
 	
 	open(11, file="res.csv")
-	do i=1,a%Nt
-		do j=1,a%N
-			write(11,*) a%X(j), a%C(j,i)
+	if (choix == "debug2") then
+		do i=1,a%Nt
+			do j=1,a%N
+				write(11,*) a%X(j), a%C(j,i), a%db2(j)
+			end do
 		end do
-	end do
+	else
+		do i=1,a%Nt
+			do j=1,a%N
+				write(11,*) a%X(j), a%C(j,i)
+			end do
+		end do
+	end if
 	close(11)
 	
 end subroutine ecriture_csv
+
+subroutine debug2(a)
+	use m_type
+	implicit none
+
+	type(mes),intent(inout) :: a
+	integer :: i
+	
+
+	do i=1,a%N
+		a%db2(i)=a%C0*(1.-a%X(i)/a%L)
+	end do
+end subroutine debug2
 
 function H(x)
 	implicit none

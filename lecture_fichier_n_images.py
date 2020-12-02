@@ -6,33 +6,31 @@ import numpy as np
 import os
 
 # CHAMP A MODIFIER EN FONCTION DU NOMBRE D'ELEMENTS DES TABLEAUX INDIVIDUELS
-nb_elements = 30
+with open("donnee.dat", "r") as donnee:
+  for i in range(5):
+    donnee.readline()
+  nb_elements = int(donnee.readline().split()[0])
 
 # creation d'un dossier qui contiendra les images generees
 os.system("mkdir -p img/")
+os.system("rm -f img/*")
 
-x = np.zeros(nb_elements)
-y = np.zeros(nb_elements)
-line_count = 0
-j  = 0
-with open("res.csv", "r") as my_file:
-  for line in my_file:
-    str = line.split()
-    line_count += 1
-    x[line_count-1]=str[0]
-    y[line_count-1]=str[1]
-    if line_count == nb_elements:
-      line_count = 0
-      j += 1
-      plt.title("Evolution")
-      plt.xlim(0.,1000.)
-      plt.ylim(0.,1.)
-      plt.xlabel('x (m)',fontsize=16)
-      plt.ylabel('concentration',fontsize=16)
-      plt.plot(x,y,"--bo",linewidth=1.0)
-      # sauvegarde de l'image
-      plt.savefig("img/"+repr(10000+j)+".png")
-      plt.close()
+res = np.loadtxt("res.csv")
+j = 0
+i = 0
+while i < res.shape[0]:
+  j += 1
+  plt.title("Evolution")
+  plt.xlim(0.,1000.)
+  plt.ylim(0.,1.)
+  plt.xlabel('x (m)',fontsize=16)
+  plt.ylabel('concentration',fontsize=16)
+  for k in range(res.shape[1]-1):
+    plt.plot(res[i:i+nb_elements,0],res[i:i+nb_elements,k+1],"--o",linewidth=1.0)
+  # sauvegarde de l'image
+  plt.savefig("img/"+repr(10000+j)+".png")
+  plt.close()
+  i += nb_elements
 
 print("generation images fini")
 
