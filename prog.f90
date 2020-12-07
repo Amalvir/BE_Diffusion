@@ -13,6 +13,6 @@ program main
 	call concentration(a)
 	!call ecriture(a)
 	call validation(a)
-	call ecriture_csv(a)
+	call ecriture2(a)
 	deallocate(a%X,a%C,a%C2)
 end program main

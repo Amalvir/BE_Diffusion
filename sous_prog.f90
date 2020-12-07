@@ -110,9 +110,7 @@ subroutine ecriture2(a)
 	type(mes),intent(in) :: a
 	integer :: i,j
 	open(11,file="sortie2.csv")
-	do j=1,a%Nt
-		write(11,*) (((a%C2(i,j)-a%C(i,j))/a%C2(i,j))*100,i=1,a%N)
-	end do
+	write(11,*) maxval(abs(a%C2-a%C),1)
 	close(11)
 end subroutine ecriture2
 
