@@ -8,8 +8,11 @@ program main
 	allocate(a%X(a%N))
 	call maillage(a)
 	allocate(a%C(a%N,a%Nt))
+	allocate(a%C2(a%N,a%Nt))
 	call C_init(a)
 	call concentration(a)
-	call ecriture(a)
-	deallocate(a%X,a%C)
+	!call ecriture(a)
+	call validation(a)
+	call ecriture_csv(a)
+	deallocate(a%X,a%C,a%C2)
 end program main

@@ -38,7 +38,8 @@ subroutine C_init(a)
 	integer :: H,i
 
 	do i=1,a%N
-		a%C(i,1)=a%C0*(H(a%X(i)-a%xd) - H(a%X(i)-a%xf)) 
+		a%C(i,1)=0.	!a%C0*(H(a%X(i)-a%xd) - H(a%X(i)-a%xf)) 
+		a%C2(i,1)=0.
 	end do
 end subroutine C_init
 
@@ -56,7 +57,7 @@ subroutine concentration(a)
 	t=0.
 
 	do j=1,a%Nt-1
-		a%C(1,j+1)=f(t)
+		a%C(1,j+1)=a%C0	!f(t)
 		a%C(a%N,j+1)=0.
 		t=t+delta_t
 		do i=2,a%N-1
@@ -81,6 +82,56 @@ subroutine ecriture(a)
 	close(11)
 	
 end subroutine ecriture
+
+! --- sub pour la partie 3 ---
+
+subroutine validation(a)
+	use m_type
+	implicit none
+
+	type(mes),intent(inout) :: a
+	real :: t,delta_t
+	integer :: i,j
+	delta_t=a%tf/real(a%Nt)
+	t=0.
+
+	do j=2,a%Nt
+		a%C2(1,j)=a%C0
+		t=t+delta_t
+		do i=2,a%N
+			a%C2(i,j)=a%C0*(1-erf(a%X(i)/(2*sqrt(a%D*t))))
+		end do
+	end do
+end subroutine validation
+
+subroutine ecriture2(a)
+	use m_type
+	implicit none
+	type(mes),intent(in) :: a
+	integer :: i,j
+	open(11,file="sortie2.csv")
+	do j=1,a%Nt
+		write(11,*) (((a%C2(i,j)-a%C(i,j))/a%C2(i,j))*100,i=1,a%N)
+	end do
+	close(11)
+end subroutine ecriture2
+
+subroutine ecriture_csv(a)
+	use m_type
+	implicit none
+	
+	type(mes), intent(in) :: a
+	integer :: i,j
+	
+	open(11, file="res.csv")
+	do i=1,a%Nt
+		do j=1,a%N
+			write(11,*) a%X(j), a%C(j,i), a%C2(j,i)
+		end do
+	end do
+	close(11)
+	
+end subroutine ecriture_csv
 
 function H(x)
 	implicit none
