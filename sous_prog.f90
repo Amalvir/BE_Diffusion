@@ -110,7 +110,7 @@ subroutine ecriture2(a)
 	type(mes),intent(in) :: a
 	integer :: i,j
 	open(11,file="sortie2.csv")
-	write(11,*) maxval(abs(a%C2-a%C),1)
+	write(11,*) sum(maxval(abs(a%C2-a%C),1))/real(a%Nt)
 	close(11)
 end subroutine ecriture2
 
