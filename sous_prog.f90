@@ -45,7 +45,9 @@ subroutine C_init(a,choix)
 			a%C(i,1)=a%C0*(H(a%X(i)-a%xd) - H(a%X(i)-a%xf)) 
 			case("debug2")
 			a%C(i,1)=0.
-
+			case("debug3")
+			a%C(i,1)=0.
+			a%C2(i,1)=0.
 			case default
 			print*, "Merci de tapper classique ou debug2"
 			stop
@@ -72,9 +74,10 @@ subroutine concentration(a,choix)
 		select case (choix)
 			case ("classique")
 			a%C(1,j+1)=f(t)
-			case("debug2")
+			case("debug2","debug3")
 			a%C(1,j+1)=a%C0
 		end select
+
 		a%C(a%N,j+1)=0.
 		t=t+delta_t
 		do i=2,a%N-1
@@ -98,6 +101,37 @@ subroutine ecriture(a)
 	
 end subroutine ecriture
 
+! --- sub pour la partie 3 ---
+
+subroutine validation(a)
+	use m_type
+	implicit none
+
+	type(mes),intent(inout) :: a
+	real :: t,delta_t
+	integer :: i,j
+	delta_t=a%tf/real(a%Nt)
+	t=0.
+
+	do j=2,a%Nt
+		a%C2(1,j)=a%C0
+		t=t+delta_t
+		do i=2,a%N
+			a%C2(i,j)=a%C0*(1-erf(a%X(i)/(2*sqrt(a%D*t))))
+		end do
+	end do
+end subroutine validation
+
+subroutine ecriture2(a)
+	use m_type
+	implicit none
+	type(mes),intent(in) :: a
+	integer :: i,j
+	open(11,file="sortie2.csv")
+	write(11,*) sum(maxval(abs(a%C2-a%C),1))/real(a%Nt)
+	close(11)
+end subroutine ecriture2
+
 subroutine ecriture_csv(a,choix)
 	use m_type
 	implicit none
@@ -107,21 +141,27 @@ subroutine ecriture_csv(a,choix)
 	integer :: i,j
 	
 	open(11, file="res.csv")
-	if (choix == "debug2") then
-		do i=1,a%Nt
-			do j=1,a%N
-				write(11,*) a%X(j), a%C(j,i), a%db2(j)
+	select case (choix)
+		case("debug2")
+			do i=1,a%Nt
+				do j=1,a%N
+					write(11,*) a%X(j), a%C(j,i), a%db2(j)
+				end do
 			end do
-		end do
-	else
-		do i=1,a%Nt
-			do j=1,a%N
-				write(11,*) a%X(j), a%C(j,i)
+		case("classique")
+			do i=1,a%Nt
+				do j=1,a%N
+					write(11,*) a%X(j), a%C(j,i)
+				end do
 			end do
-		end do
-	end if
-	close(11)
-	
+		case("debug3")
+			do i=1,a%Nt
+				do j=1,a%N
+					write(11,*) a%X(j), a%C(j,i), a%C2(j,i)
+				end do
+			end do
+	end select
+	close(11)	
 end subroutine ecriture_csv
 
 subroutine debug2(a)
