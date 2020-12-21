@@ -4,6 +4,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import math as m
 
 # CHAMP A MODIFIER EN FONCTION DU NOMBRE D'ELEMENTS DES TABLEAUX INDIVIDUELS
 with open("donnee.dat", "r") as donnee:
@@ -18,13 +19,23 @@ os.system("rm -f img/*")
 res = np.loadtxt("res.csv")
 
 if res[0,1]>1e-8:
+# Cas de l'étape ou on trace des trucs en logs
   plt.xscale('log')
   plt.yscale('log')
-  plt.title("Evolution")
-  plt.xlabel(r'$\Delta x/L$',fontsize=16)
-  plt.ylabel('Théorique-pratique',fontsize=16)
-  plt.plot(res[0:nb_elements,0],res[0:nb_elements,1],"--o",linewidth=1.0)
-  plt.plot(res[0:nb_elements,0],res[0:nb_elements,2],"--o",linewidth=1.0)
+  plt.title("Evolution en échelle log")
+  #plt.xlabel(r'$\Delta t/T_f$')
+  plt.xlabel(r'$R$')
+  plt.ylabel('Erreur')
+
+  p = np.polyfit(np.log(res[:,0]),np.log(res[:,1]),1)
+
+  tau = p[0]
+  k = m.exp(p[1])
+  
+  plt.plot(res[:,0],k*pow(res[:,0],tau),"-r",label=str(tau)+"x + "+str(k))
+  for k in range(res.shape[1]-1):
+    plt.plot(res[:,0],res[:,k+1],"--o",linewidth=1.0)
+  plt.legend()
   # sauvegarde de l'image
   plt.savefig("img/"+repr(10000)+".png")
   plt.close()
