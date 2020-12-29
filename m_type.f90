@@ -1,4 +1,5 @@
 module m_type 
+        ! Module des mesures physiques du programme.
         implicit none
         type mes
                 real :: C0,L,D,xd,xf,tf

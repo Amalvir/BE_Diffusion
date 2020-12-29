@@ -7,11 +7,19 @@ import os
 import math as m
 
 # CHAMP A MODIFIER EN FONCTION DU NOMBRE D'ELEMENTS DES TABLEAUX INDIVIDUELS
-with open("donnee.dat", "r") as donnee:
-  for i in range(5):
-    donnee.readline()
-  nb_elements = int(donnee.readline().split()[0])
 
+don = np.loadtxt("donnee.dat",comments='!')
+
+#0 !C0
+#1 !L
+#2 !D
+#3 !xd
+#4 !xf
+#5 !N
+#6 !Nt
+#7!tf
+
+nb_elements = int(don[5])
 # creation d'un dossier qui contiendra les images generees
 os.system("mkdir -p img/")
 os.system("rm -f img/*")
@@ -42,21 +50,24 @@ if res[0,1]>1e-8:
 else:
   j = 0
   i = 0
+  delta_t = don[7]/(don[6]-1)
+  t = 0.
   while i < res.shape[0]:
     j += 1
-    plt.title("Evolution")
+    plt.title(f"Évolution de la concentration dans l'espace\n avec $C_0={don[0]}~mol/L$ et $D={don[2]}~m^2/s$ à $t={round(t)}~s$")
     plt.xlim(0.,1000.)
     plt.ylim(0.,1.)
-    plt.xlabel('x (m)',fontsize=16)
-    plt.ylabel('concentration',fontsize=16)
+    plt.xlabel(u'x ($m$)')
+    plt.ylabel(u'Concentration ($mol/L$)')
     for k in range(res.shape[1]-1):
       plt.plot(res[i:i+nb_elements,0],res[i:i+nb_elements,k+1],"--o",linewidth=1.0)
     # sauvegarde de l'image
     plt.savefig("img/"+repr(10000+j)+".png")
     plt.close()
     i += nb_elements
+    t += delta_t
 
-print("generation images fini")
+print("generation images finie")
 
 # pour creer la video sous linux a partir des images avec mencoder
 # mencoder mf://\*.png -mf w=800:h=600:fps=6:type=png -ovc lavc -lavcopts vcodec=mpeg4 -oac copy -o output.avi

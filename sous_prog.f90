@@ -1,4 +1,5 @@
 subroutine recup_donnee(a)
+        ! Lecture des données du problème dans le fichier donnee.dat.
         use m_type
         implicit none
 
