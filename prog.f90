@@ -31,11 +31,7 @@ program main
                         call C_init(a,choix)
                         call concentration(a,choix)
                         call validation(a)
-                        if (choix=="part3") then
-                                write(11,*) a%D*a%tf/(a%Nt*delta_x**2), sum(maxval(abs(a%C-a%C2),1))/real(a%Nt)!, delta_x/a%L
-                        else
-                                write(11,*) a%D*a%tf/(a%Nt*delta_x**2), sum(maxval(abs(a%C-a%C2),1))/real(a%Nt)!, delta_t/a%tf
-                        end if
+                        write(11,*) a%D*a%tf/(a%Nt*delta_x**2), sum(maxval(abs(a%C-a%C2),1))/real(a%Nt)!, delta_x/a%L
                         deallocate(a%X,a%C,a%C2)
                 end do
                 close(11)

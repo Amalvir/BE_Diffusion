@@ -30,7 +30,8 @@ if res[0,1]>1e-8:
 # Cas de l'étape ou on trace des trucs en logs
   plt.xscale('log')
   plt.yscale('log')
-  plt.title("Evolution en échelle log")
+  delta_t = don[7]/don[6]
+  plt.title(f"Evolution en échelle log de la moyenne de l'erreur\n avec $\Delta t = {delta_t}$ et $D={don[2]}~m^2/s$")
   #plt.xlabel(r'$\Delta t/T_f$')
   plt.xlabel(r'$R$')
   plt.ylabel('Erreur')
