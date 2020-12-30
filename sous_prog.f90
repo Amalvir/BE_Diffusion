@@ -44,13 +44,13 @@ subroutine C_init(a,choix)
                 select case (choix)
                         case ("classique")
                         a%C(i,1)=a%C0*(H(a%X(i)-a%xd) - H(a%X(i)-a%xf)) 
-                        case("debug2")
+                        case("part2")
                         a%C(i,1)=0.
-                        case("debug3","debug5")
+                        case("part3","part5")
                         a%C(i,1)=0.
                         a%C2(i,1)=0.
                         case default
-                        print*, "Merci de tapper classique, debug2, debug3, debug5"
+                        print*, "Merci de tapper classique, part2, part3, part5"
                         stop
                 end select
         end do
@@ -75,7 +75,7 @@ subroutine concentration(a,choix)
                 select case (choix)
                         case ("classique")
                         a%C(1,j+1)=f(t)
-                        case("debug2","debug3","debug5")
+                        case("part2","part3","part5")
                         a%C(1,j+1)=a%C0
                 end select
 
@@ -143,7 +143,7 @@ subroutine ecriture_csv(a,choix)
         
         open(11, file="res.csv")
         select case (choix)
-                case("debug2")
+                case("part2")
                         do i=1,a%Nt
                                 do j=1,a%N
                                         write(11,*) a%X(j), a%C(j,i), a%db2(j)
@@ -155,7 +155,7 @@ subroutine ecriture_csv(a,choix)
                                         write(11,*) a%X(j), a%C(j,i)
                                 end do
                         end do
-                case("debug3")
+                case("part3")
                         do i=1,a%Nt
                                 do j=1,a%N
                                         write(11,*) a%X(j), a%C(j,i), a%C2(j,i)
@@ -165,7 +165,7 @@ subroutine ecriture_csv(a,choix)
         close(11)       
 end subroutine ecriture_csv
 
-subroutine debug2(a)
+subroutine part2(a)
         use m_type
         implicit none
 
@@ -176,7 +176,7 @@ subroutine debug2(a)
         do i=1,a%N
                 a%db2(i)=a%C0*(1.-a%X(i)/a%L)
         end do
-end subroutine debug2
+end subroutine part2
 
 function H(x)
         implicit none

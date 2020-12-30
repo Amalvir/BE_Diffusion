@@ -14,10 +14,10 @@ program main
                 call getarg(1, choix)
         end if
         call recup_donnee(a)
-        if (choix=="debug3" .or. choix=="debug5") then
+        if (choix=="part3" .or. choix=="part5") then
                 open(11,file="res.csv")
                 do i=20,80
-                        if (choix=="debug3") then 
+                        if (choix=="part3") then 
                                 a%N=i
                         else
                                 a%Nt=i
@@ -31,7 +31,7 @@ program main
                         call C_init(a,choix)
                         call concentration(a,choix)
                         call validation(a)
-                        if (choix=="debug3") then
+                        if (choix=="part3") then
                                 write(11,*) a%D*a%tf/(a%Nt*delta_x**2), sum(maxval(abs(a%C-a%C2),1))/real(a%Nt)!, delta_x/a%L
                         else
                                 write(11,*) a%D*a%tf/(a%Nt*delta_x**2), sum(maxval(abs(a%C-a%C2),1))/real(a%Nt)!, delta_t/a%tf
@@ -45,9 +45,9 @@ program main
                 allocate(a%C(a%N,a%Nt))
                 call C_init(a,choix)
                 call concentration(a,choix)
-                if (choix == "debug2") then
+                if (choix == "part2") then
                         allocate(a%db2(a%N))
-                        call debug2(a)
+                        call part2(a)
                 end if
                 call ecriture_csv(a,choix)
                 if (allocated(a%db2)) then
