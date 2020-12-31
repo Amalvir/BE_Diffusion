@@ -16,5 +16,5 @@ sous_prog.o :	sous_prog.f90
 	$(FC) $(OPT) sous_prog.f90 -c
 
 clean :
-	/bin/rm -f $(OBJ) *.mod *.exe *.txt
+	/bin/rm -f $(OBJ) *.mod *.exe *.csv ./img/*
 
