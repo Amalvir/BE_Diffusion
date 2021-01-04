@@ -55,8 +55,8 @@ subroutine concentration(a)
         integer :: i,j
         real :: delta_x,delta_t,R,t,f
 
-        delta_x=a%L/real(a%N)
-        delta_t=a%tf/real(a%Nt)
+        delta_x=a%L/real(a%N-1)
+        delta_t=a%tf/real(a%Nt-1)
         R=a%D*delta_t/(delta_x**2)
         t=0.
 
