@@ -66,8 +66,8 @@ subroutine concentration(a,choix)
         real :: delta_x,delta_t,R,t
         real :: f
 
-        delta_x=a%L/real(a%N)
-        delta_t=a%tf/real(a%Nt)
+        delta_x=a%L/real(a%N-1)
+        delta_t=a%tf/real(a%Nt-1)
         R=a%D*delta_t/(delta_x**2)
         t=0.
 
@@ -111,7 +111,7 @@ subroutine validation(a)
         type(mes),intent(inout) :: a
         real :: t,delta_t
         integer :: i,j
-        delta_t=a%tf/real(a%Nt)
+        delta_t=a%tf/real(a%Nt-1)
         t=0.
 
         do j=2,a%Nt
